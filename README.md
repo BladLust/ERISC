@@ -2,6 +2,35 @@
 # ERISC
 
 ## General
+## 技术细节
+### 指令编码
+本项目将模拟实际汇编语言的编译，讲程序翻译成为16进制指令存储于`instructionStack`中。`instructionStack`大小为0x400010（4M），程序中全部跳转与函数调用指令将直接在编译阶段被翻译为8位地址码，指示跳转后应执行的程序行在`instructionSet`中的位置。
+#### 指令
+
+Instruction | Code | Syntax | Meaning|
+|---|---|---|---|
+|`load`|0x10|
+|`store`|0x11|
+|`push`|0x20|
+|`pop`|0x21|
+|`mov`|0x30|
+|`add`|0x40|
+|`sub`|0x41|
+|`mul`|0x50|
+|`div`|0x51|
+|`rem`|0x52|
+|`and`|0x60|
+|`or`|0x61|
+|*:|Address|N\A|Will not appear in final parsed instruction binary.
+|`jal`|0x70|
+|`beq`|0x80
+|`bne`|0x81
+|`blt`|0x82
+|`bge`|0x83
+|`call`|0x90
+|`ret`|0x91
+|`draw`|0xa0
+|`end`|0x00
 
 ### 关于本块README空间的使用
 

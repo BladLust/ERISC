@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/GeneralFunctions.cpp
+GeneralFunctions.h
+/Users/timothy.tsui/CLionProjects/ERISC/src/GeneralFunctions.h
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/GeneralFunctions.h
+string
+-
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.cpp
+InstructionParser.h
+/Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.h
+Storage.h
+/Users/timothy.tsui/CLionProjects/ERISC/src/Storage.h
+fstream
+-
+map
+-
+GeneralFunctions.h
+/Users/timothy.tsui/CLionProjects/ERISC/src/GeneralFunctions.h
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.h
+string
+-
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/Storage.cpp
+Storage.h
+/Users/timothy.tsui/CLionProjects/ERISC/src/Storage.h
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/Storage.h
+
+/Users/timothy.tsui/CLionProjects/ERISC/src/main.cpp
+iostream
+-
+InstructionParser.h
+/Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.h
+

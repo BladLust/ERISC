@@ -33,3 +33,5 @@
 *.vscode-workspace
 .vscode/*
 *.DS_Store
+*/cmake-build-debug/*
+*/.idea/*

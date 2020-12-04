@@ -5,6 +5,7 @@
 ## 技术细节
 ### 指令编码
 本项目将模拟实际汇编语言的编译，讲程序翻译成为16进制指令存储于`instructionStack`中。`instructionStack`大小为0x400010（4M），程序中全部跳转与函数调用指令将直接在编译阶段被翻译为8位地址码，指示跳转后应执行的程序行在`instructionSet`中的位置。
+`instructionStack`中的立即数值均为小端存储，使用时直接用个`int*`找准位置"啪！"的一下就捞出来了。
 #### 指令
 
 Instruction | Code | Syntax|Len | Meaning|

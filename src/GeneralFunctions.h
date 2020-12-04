@@ -11,5 +11,12 @@
  * @return position of the register in array
  */
 unsigned int registerNameToLoc(const std::string &name);
+/**
+ * dumps everything in the array in Hex, for length len, and lineLen bytes per line.
+ * @param arr the pointer to the array
+ * @param len total length for output, in Bytes
+ * @param lineLen how many bytes per line.
+ */
+void dumpBinary(const void* arr, int len,int lineLen);
 
 #endif // ERISC_GENERALFUNCTIONS_H

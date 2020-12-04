@@ -8,10 +8,13 @@ CMakeFiles/ERISC.exe.dir/InstructionParser.cpp.o
  /Users/timothy.tsui/CLionProjects/ERISC/src/GeneralFunctions.h
  /Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.cpp
  /Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.h
+ /Users/timothy.tsui/CLionProjects/ERISC/src/Settings.h
  /Users/timothy.tsui/CLionProjects/ERISC/src/Storage.h
 CMakeFiles/ERISC.exe.dir/Storage.cpp.o
  /Users/timothy.tsui/CLionProjects/ERISC/src/Storage.cpp
  /Users/timothy.tsui/CLionProjects/ERISC/src/Storage.h
 CMakeFiles/ERISC.exe.dir/main.cpp.o
+ /Users/timothy.tsui/CLionProjects/ERISC/src/GeneralFunctions.h
  /Users/timothy.tsui/CLionProjects/ERISC/src/InstructionParser.h
+ /Users/timothy.tsui/CLionProjects/ERISC/src/Storage.h
  /Users/timothy.tsui/CLionProjects/ERISC/src/main.cpp

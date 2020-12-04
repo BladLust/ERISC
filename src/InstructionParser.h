@@ -18,5 +18,5 @@ int parseInstructions(std::string dir);
  * Pointer to the instruction Stack
  * WARNING: USE AFTER CALLING 'parseInstructions', OR THIS POINTER IS NULLPTR
  */
-const InstructionStackType *instructionStack;
+extern const InstructionStackType *instructionStack;
 #endif // ERISC_INSTRUCTIONPARSER_H

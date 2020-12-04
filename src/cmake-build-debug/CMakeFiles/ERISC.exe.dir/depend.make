@@ -7,11 +7,14 @@ CMakeFiles/ERISC.exe.dir/GeneralFunctions.cpp.o: ../GeneralFunctions.h
 CMakeFiles/ERISC.exe.dir/InstructionParser.cpp.o: ../GeneralFunctions.h
 CMakeFiles/ERISC.exe.dir/InstructionParser.cpp.o: ../InstructionParser.cpp
 CMakeFiles/ERISC.exe.dir/InstructionParser.cpp.o: ../InstructionParser.h
+CMakeFiles/ERISC.exe.dir/InstructionParser.cpp.o: ../Settings.h
 CMakeFiles/ERISC.exe.dir/InstructionParser.cpp.o: ../Storage.h
 
 CMakeFiles/ERISC.exe.dir/Storage.cpp.o: ../Storage.cpp
 CMakeFiles/ERISC.exe.dir/Storage.cpp.o: ../Storage.h
 
+CMakeFiles/ERISC.exe.dir/main.cpp.o: ../GeneralFunctions.h
 CMakeFiles/ERISC.exe.dir/main.cpp.o: ../InstructionParser.h
+CMakeFiles/ERISC.exe.dir/main.cpp.o: ../Storage.h
 CMakeFiles/ERISC.exe.dir/main.cpp.o: ../main.cpp
 

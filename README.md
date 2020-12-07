@@ -2,44 +2,6 @@
 # ERISC
 
 ## General
-## 技术细节
-### 指令编码
-本项目将模拟实际汇编语言的编译，讲程序翻译成为16进制指令存储于`instructionStack`中。`instructionStack`大小为0x400010（4M），程序中全部跳转与函数调用指令将直接在编译阶段被翻译为8位地址码，指示跳转后应执行的程序行在`instructionSet`中的位置。
-`instructionStack`中的立即数值均为小端存储，使用时直接用个`int*`找准位置"啪！"的一下就捞出来了。
-#### 指令
-
-Instruction | Code | Syntax|Len | Meaning|
-|---|---|---|---|---|
-|`load`|0x10|[rd][rs]|3B
-|`store`|0x11|[rs][rd]|3B
-|`push`|0x20|[rs]|2B|
-|`pop`|0x21|[rd]|2B
-|`mov`|0x30|[rd][rs]|3B|
-|`mov`(imm)|0x31|[rd][imm]|6B
-|`add`|0x40|[rd][rs1][rs2]|4B
-|`add`(imm)|0x41|[rd][rs1][imm]|7B
-|`sub`|0x42|[rd][rs1][rs2]|4B|
-|`sub`(imm)|0x43|[rd][rs1][imm]|7B|
-|`mul`|0x50|[rd][rs1][rs2]|4B|
-|`mul`(imm)|0x51|[rd][rs1][imm]|7B|
-|`div`|0x52|[rd][rs1][rs2]|4B|
-|`div`(imm)|0x53|[rd][rs1][imm]|7B|
-|`rem`|0x54|[rd][rs1][rs2]|4B|
-|`rem`(imm)|0x55|[rd][rs1][imm]|7B|
-|`and`|0x60|[rd][rs1][rs2]|4B|
-|`and`(imm)|0x61|[rd][rs1][imm]|7B|
-|`or`|0x62|[rd][rs1][rs2]|4B|
-|`or`(imm)|0x63|[rd][rs1][imm]|7B|
-|*:|Address|N\A|0B|Will not appear in final parsed instruction binary.
-|`jal`|0x70|[addr]|5B|
-|`beq`|0x80|[rs1][rs2][addr]|7B|
-|`bne`|0x81|[rs1][rs2][addr]|7B|
-|`blt`|0x82|[rs1][rs2][addr]|7B|
-|`bge`|0x83|[rs1][rs2][addr]|7B|
-|`call`|0x90|[addr]|5B|
-|`ret`|0x91|N/A|1B|
-|`draw`|0xa0|N/A|1B|
-|`end`|0x00|N/A|1B|
 
 ### 关于本块README空间的使用
 

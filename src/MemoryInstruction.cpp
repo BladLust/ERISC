@@ -22,19 +22,17 @@ void MemoryInstruction(char* instruction){
 
         switch(takeout){
             case 0x10 ://load
-                unsigned char* rd = instStack[1]; //1 byte = 8 bits, 抽出0x00
-                unsigned char* rs = instStack[2]; //1 byte
+                unsigned char* rd = instStack[2]; //1 byte = 8 bits, 抽出0x00
+                unsigned char* rs = instStack[1]; //1 byte
                 int rd_idx = int_convert(rd);
-                int rs_idx = int_convert(rs);
-                SimulatorStorageType.registers[rd_idx] = *(SimulatorStorageType.registers[rs_idx]);
+                SimulatorStorageType.registers[rd_idx] = *(SimulatorStorageType.memory[rs]);
                 break;
 
             case 0x11 ://store
-                unsigned char* rd = instStack[2];
+                unsigned char* rd = instStack[1];
                 unsigned char* rs = instStack[1];
                 int rs_idx = int_convert(rs);
-                int rd_idx = int_convert(rd);
-                *(SimulatorStorageType.registers[rs_idx]) = SimulatorStorageType.registers[rd_idx];
+                SimulatorStorageType.memory[rd] = *(SimulatorStorageType.registers[rs_idx])
                 break;
             
             case 0x20 ://push

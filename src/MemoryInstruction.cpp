@@ -13,89 +13,102 @@
 #include <vector>
 #include "MemoryInstruction.h"
 
-const InstructionStackType *instructionStack; // maybe want to delete it
+//const InstructionStackType *instructionStack; // maybe want to delete it
 
 void MemoryInstruction(char* instruction){
     InstructionStackType instStack;
     while(std::cin >> instStack != EOF){
-        unsigned char takeout = instructionStack[0];
+        unsigned char takeout = instStack[0];
 
         switch(takeout){
             case 0x10 ://load
-                unsigned char* rd = instructionStack[1]; //1 byte = 8 bits, 抽出0x00
-                unsigned char* rs = instructionStack[2]; //1 byte
+                unsigned char* rd = instStack[1]; //1 byte = 8 bits, 抽出0x00
+                unsigned char* rs = instStack[2]; //1 byte
                 int rd_idx = int_convert(rd);
                 int rs_idx = int_convert(rs);
                 SimulatorStorageType.registers[rd_idx] = *(SimulatorStorageType.registers[rs_idx]);
                 break;
 
             case 0x11 ://store
-                unsigned char* rd = instructionStack[2];
-                unsigned char* rs = instructionStack[1];
+                unsigned char* rd = instStack[2];
+                unsigned char* rs = instStack[1];
                 int rs_idx = int_convert(rs);
                 int rd_idx = int_convert(rd);
                 *(SimulatorStorageType.registers[rs_idx]) = SimulatorStorageType.registers[rd_idx];
                 break;
             
             case 0x20 ://push
-                unsigned char* rs = instructionStack[1];
+                unsigned char* rs = instStack[1];
                 int rs_idx = int_convert(rs);
                 SimulatorStorageType.stack[SimulatorStorageType.stackTop] = *(SimulatorStorageType.registers[rs_idx]);
                 SimulatorStorageType.stackTop --;
                 break;
                 
             case 0x21 ://pop
-                unsigned char* rd = instructionStack[1];
+                unsigned char* rd = instStack[1];
                 int rd_idx = int_convert(rd);
                 *(SimulatorStorageType.registers[rd_idx]) = stack[SimulatorStorageType.stackTop];
                 SimulatorStorageType.stackTop ++;
                 return stack[SimulatorStorageType.stackTop - 1];
             
             case 0x30 ://mov_1
-                unsigned char* rd = instructionStack[1]; 
-                unsigned char* rs = instructionStack[2]; 
+                unsigned char* rd = instStack[1]; 
+                unsigned char* rs = instStack[2]; 
                 int rd_idx = int_convert(rd);
                 int rs_idx = int_convert(rs);
                 *(SimulatorStorageType.registers[rd_idx]) = *(SimulatorStorageType.registers[rs_idx];
                 break;
  
             case 0x31 ://mov_2
-                unsigned char* rd = instructionStack[1]; 
-                int* imm = instructionStack[2];
+                unsigned char* rd = instStack[1]; 
+                int* imm = instStack[2];
                 *(SimulatorStorageType.registers[rd_idx]) = imm;
                 break;
-                
-            case 0x60 ://and_1 un_finished
-                unsigned char* rd = instructionStack[1]; 
-                unsigned char* rs1 = instructionStack[2]; 
-                unsigned char* rs2 = instructionStack[3]; 
+            
+            case 0x70 ://jal
+                next = *((int*)instStack[next+1]);
+                break;
+
+            case 0x80 ://beq
+                unsigned char* rs1 = instStack[1]; 
+                unsigned char* rs2 = instStack[2]; 
+                int rs1_idx = int_convert(rs1);
+                int rs2_idx = int_convert(rs2);
+                if (*(SimulatorStorageType.registers[rs1_idx]) == *(SimulatorStorageType.registers[rs2_idx])){
+                    next = *((int*)instStack[next+1]);
+                }
+                break;
+
+            case 0x81 ://bne
+                unsigned char* rs1 = instStack[1]; 
+                unsigned char* rs2 = instStack[2]; 
+                int rs1_idx = int_convert(rs1);
+                int rs2_idx = int_convert(rs2);
+                if (*(SimulatorStorageType.registers[rs1_idx]) != *(SimulatorStorageType.registers[rs2_idx])){
+                    next = *((int*)instStack[next+1]);
+                }
                 break;
             
-            case  0x61://and_2
-
-            
-            case 0x62 ://or_1
-
-            
-            case 0x63 ://or_2
-
-                
-            case 0x70 ://jal
-
-    
-            case 0x80 ://beq
-
-            
-            case 0x81 ://bne
-
-            
             case 0x82 ://blt
+                unsigned char* rs1 = instStack[1]; 
+                unsigned char* rs2 = instStack[2]; 
+                int rs1_idx = int_convert(rs1);
+                int rs2_idx = int_convert(rs2);
+                if (*(SimulatorStorageType.registers[rs1_idx]) < *(SimulatorStorageType.registers[rs2_idx])){
+                    next = *((int*)instStack[next+1]);
+                }
+                break;
 
             
             case 0x83 ://bge
-        
-            
-            
+                unsigned char* rs1 = instStack[1]; 
+                unsigned char* rs2 = instStack[2]; 
+                int rs1_idx = int_convert(rs1);
+                int rs2_idx = int_convert(rs2);
+                if (*(SimulatorStorageType.registers[rs1_idx]) >= *(SimulatorStorageType.registers[rs2_idx])){
+                    next = *((int*)instStack[next+1]);
+                }
+                break;
         }
                
     }

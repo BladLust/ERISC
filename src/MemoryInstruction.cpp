@@ -12,15 +12,15 @@
 #include <map>
 #include <vector>
 #include "MemoryInstruction.h"
-
+#include "InstructionParser.h"
 //const InstructionStackType *instructionStack; // maybe want to delete it
 
 void MemoryInstruction(char* instruction){
-    InstructionStackType instStack;
-    while(std::cin >> instStack != EOF){
-        unsigned char takeout = instStack[0];
+  int next=instructionStack->stack[instructionStack->stackTop];
+    while(true){
+        //unsigned char takeout = instStack[0];
 
-        switch(takeout){
+        switch(instructionStack->stack[next]){
             case 0x10 ://load
                 unsigned char* rd = instStack[2]; //1 byte = 8 bits, 抽出0x00
                 unsigned char* rs = instStack[1]; //1 byte
@@ -50,11 +50,7 @@ void MemoryInstruction(char* instruction){
                 return stack[SimulatorStorageType.stackTop - 1];
             
             case 0x30 ://mov_1
-                unsigned char* rd = instStack[1]; 
-                unsigned char* rs = instStack[2]; 
-                int rd_idx = int_convert(rd);
-                int rs_idx = int_convert(rs);
-                *(SimulatorStorageType.registers[rd_idx]) = *(SimulatorStorageType.registers[rs_idx];
+              simStorage.registers[instructionStack->stack[next+1]]=simStorage.registers[instructionStack->stack[next+2]];
                 break;
  
             case 0x31 ://mov_2

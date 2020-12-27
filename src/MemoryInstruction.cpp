@@ -101,6 +101,19 @@ void MemoryInstruction(char* instruction){
               next = simStorage.stack[instructionStack->stack[next+1]];
             }
             break;
+          
+          case 0x90 ://call
+            next = simStorage.stack[instructionStack->stack[next+1]];//我接下来直接把push搬过来了
+            simStorage.stack[instructionStack->stackTop] = simStorage.registers[instructionStack->stack[next+1]];
+            record->reg_read[instructionStack->stack[next+1]] = 1;
+            simStorage.stackTop --;
+            record->stack = 1;
+            break;
+
+          case 0x91 ://ret
+            //怎么出栈得出一个行号？return吗
+            record->stack = 1;
+            break;
         }
                
     }

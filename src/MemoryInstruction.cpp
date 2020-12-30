@@ -57,7 +57,7 @@ void MemoryInstruction(char* instruction){
             simStorage.registers[instructionStack->stack[next+1]]=simStorage.registers[instructionStack->stack[next+2]];
             //record->reg_write[instructionStack->stack[next+1]] = 1;
             //record->reg_read[instructionStack->stack[next+2]] = 1;
-            next += 3;
+            next += 6;
             break;
             
           case 0x70 ://jal

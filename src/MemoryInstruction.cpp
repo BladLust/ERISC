@@ -125,7 +125,7 @@ void MemoryInstruction(int next)
       break;
 
     default : //Optional
-      arithmeticOp(next);
+      arithmeticOp(next, instructionStack->stack[next]);
     }
   }
 }

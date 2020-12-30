@@ -9,17 +9,17 @@
  * VALUE.
  */
 typedef struct {
-  char stack[0x400010];      // 4 megabytes of memory, with 16 bytes spare;
+  unsigned char stack[0x400010];      // 4 megabytes of memory, with 16 bytes spare;
   unsigned int stackTop = 0x400000; // stack[stackTop] is the location of the NEXT byte
                              // to the last byte of the stack
-  char memory[0x400010];
+  unsigned char memory[0x400010];
   int registers[32];
 } SimulatorStorageType;
 /**
  * struct to hold all instructions.
  */
 typedef struct {
-  char stack[0x400010];
+  unsigned char stack[0x400010];
   unsigned int stackTop = 0;
 } InstructionStackType;
 extern SimulatorStorageType simStorage;

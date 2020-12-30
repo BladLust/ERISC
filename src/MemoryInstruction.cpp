@@ -13,7 +13,6 @@
 #include <vector>
 #include "MemoryInstruction.h"
 #include "InstructionParser.h"
-#include "drawBitmapImage.h"
 
 void MemoryInstruction(int next)
 {
@@ -126,7 +125,7 @@ void MemoryInstruction(int next)
       //outputTxt();
       break;
 
-    default : //Optional
+    default :; //Optional
       //arithmeticOp(next, instructionStack->stack[next]);
     }
   }

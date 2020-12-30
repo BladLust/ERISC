@@ -8,7 +8,6 @@
 #include "GeneralFunctions.h"
 #include "Settings.h"
 #include "Storage.h"
-#include "drawBitmapImage.h"
 //#include "outputTxt.h"
 
 typedef struct {

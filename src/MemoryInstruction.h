@@ -10,5 +10,10 @@
 #include "Storage.h"
 #include "drawBitmapImage.h"
 //void MemoryInstruction(char* instruction);
+typedef struct {
+  int imageFileNum = 0;
+} MemoryInst;
 void MemoryInstruction(int next);
+extern MemoryInst MemoryInstRecord;
+
 #endif // ERISC_MEMORYINSTRUCTION_H

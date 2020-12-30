@@ -9,5 +9,6 @@
 #include "Settings.h"
 #include "Storage.h"
 #include "drawBitmapImage.h"
-void MemoryInstruction(char* instruction);
+//void MemoryInstruction(char* instruction);
+void MemoryInstruction(int next);
 #endif // ERISC_MEMORYINSTRUCTION_H

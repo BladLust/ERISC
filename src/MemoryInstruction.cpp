@@ -15,8 +15,9 @@
 #include "InstructionParser.h"
 #include "drawBitmapImage.h"
 
-void MemoryInstruction(char* instruction){
-  int next=instructionStack->stack[instructionStack->stackTop];
+
+void MemoryInstruction(int next){
+  next=instructionStack->stack[instructionStack->stackTop];
     while(true){
       switch(instructionStack->stack[next]){
         case 0x10 ://load
@@ -113,6 +114,13 @@ void MemoryInstruction(char* instruction){
           case 0x91 ://ret
             //怎么出栈得出一个行号？return吗
             //record->stack = 1;
+            break;
+          
+          case 0xa0 ://draw
+            MemoryInstRecord.imageFileNum ++;
+            break;
+
+          case 0x00 ://end
             break;
         }
                

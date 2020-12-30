@@ -125,11 +125,11 @@ void MemoryInstruction(int next)
       break;
 
     case 0x00: //end
-      outputTxt();
+      //outputTxt();
       break;
 
     default : //Optional
-      arithmeticOp(next, instructionStack->stack[next]);
+      //arithmeticOp(next, instructionStack->stack[next]);
     }
   }
 }

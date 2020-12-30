@@ -17,6 +17,8 @@ struct recordStorageUsage {
     bool memory[16];
     bool stack;
 };
+extern recordStorageUsage record;
+
 /**
  * Draws Bitmap Image
  * @param imageFileNum The number of calls of this function, used for naming bmp image.

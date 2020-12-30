@@ -125,6 +125,7 @@ void MemoryInstruction(int next)
       break;
 
     case 0x00: //end
+      outputTxt();
       break;
 
     default : //Optional

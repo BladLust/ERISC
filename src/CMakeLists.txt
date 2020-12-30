@@ -6,4 +6,4 @@ project (ERISC)
 # 并将名称保存到 DIR_SRCS 变量
 aux_source_directory(. DIR_SRCS)
 # 指定生成目标
-add_executable(ERISC.exe ${DIR_SRCS} GeneralFunctions.cpp GeneralFunctions.h)
+add_executable(ERISC.exe ${DIR_SRCS} )

@@ -13,7 +13,7 @@ typedef struct {
   unsigned int stackTop = 0; // stack[stackTop] is the location of the NEXT byte
                              // to the last byte of the stack
   char memory[0x400010];
-  int registers[32];
+  int registers[32]={0};
 } SimulatorStorageType;
 /**
  * struct to hold all instructions.

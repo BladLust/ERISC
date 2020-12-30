@@ -10,7 +10,7 @@
 #include "Storage.h"
 #include "drawBitmapImage.h"
 //#include "outputTxt.h"
-//void MemoryInstruction(char* instruction);
+
 typedef struct {
   int imageFileNum = 0;
 } MemoryInst;

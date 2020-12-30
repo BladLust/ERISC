@@ -46,7 +46,6 @@ void MemoryInstruction(int next)
       simStorage.registers[instructionStack->stack[next + 1]] = simStorage.stack[instructionStack->stackTop];
       simStorage.stackTop++;
       //record->stack = 1;
-      //simStorage.stack[instructionStack->stackTop-1];
       break;
 
     case 0x30: //mov_1
@@ -115,13 +114,12 @@ void MemoryInstruction(int next)
     case 0x91: //ret
       next = simStorage.stack[instructionStack->stackTop];
       simStorage.stackTop++;
-      //simStorage.stack[instructionStack->stackTop - 1];
       //record->stack = 1;
       break;
 
     case 0xa0: //draw
-      MemoryInstRecord.imageFileNum++;
-      drawBitmapImage (MemoryInstRecord.imageFileNum);
+      //MemoryInstRecord.imageFileNum++;
+      //drawBitmapImage (MemoryInstRecord.imageFileNum);
       break;
 
     case 0x00: //end

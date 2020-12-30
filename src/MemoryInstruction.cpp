@@ -119,6 +119,7 @@ void MemoryInstruction(int next)
 
     case 0xa0: //draw
       MemoryInstRecord.imageFileNum++;
+      drawBitmapImage (MemoryInstRecord.imageFileNum);
       break;
 
     case 0x00: //end

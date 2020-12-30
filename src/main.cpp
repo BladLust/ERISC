@@ -20,6 +20,6 @@ int main() {
 //  ifs>>input;
 //  cout<<input;
   MemoryInstruction(next);
-  drawBitmapImage(MemoryInstRecord.imageFileNum);
+  //drawBitmapImage(MemoryInstRecord.imageFileNum);
   return 0;
 }

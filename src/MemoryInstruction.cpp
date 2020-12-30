@@ -46,7 +46,7 @@ void MemoryInstruction(int next)
       simStorage.registers[instructionStack->stack[next + 1]] = simStorage.stack[instructionStack->stackTop];
       simStorage.stackTop++;
       //record->stack = 1;
-      simStorage.stack[instructionStack->stackTop - 1];
+      //simStorage.stack[instructionStack->stackTop-1];
       break;
 
     case 0x30: //mov_1
@@ -105,7 +105,7 @@ void MemoryInstruction(int next)
       break;
 
     case 0x90: //call
-      next = simStorage.stack[instructionStack->stack[next + 1]]; //我接下来直接把push搬过来了
+      next = simStorage.stack[instructionStack->stack[next + 1]]; 
       simStorage.stack[instructionStack->stackTop] = simStorage.registers[instructionStack->stack[next + 1]];
       //record->reg_read[instructionStack->stack[next+1]] = 1;
       simStorage.stackTop--;
@@ -115,7 +115,7 @@ void MemoryInstruction(int next)
     case 0x91: //ret
       next = simStorage.stack[instructionStack->stackTop];
       simStorage.stackTop++;
-      simStorage.stack[instructionStack->stackTop - 1];
+      //simStorage.stack[instructionStack->stackTop - 1];
       //record->stack = 1;
       break;
 

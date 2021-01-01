@@ -19,7 +19,8 @@ int main() {
 //  cout<<!ifs<<endl;
 //  ifs>>input;
 //  cout<<input;
-  MemoryInstruction(next);
+
+  //MemoryInstruction(next);
   //drawBitmapImage(MemoryInstRecord.imageFileNum);
   return 0;
 }

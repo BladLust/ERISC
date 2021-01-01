@@ -71,7 +71,6 @@ void MemoryInstruction(int next)
       //record.stack = 1;
       //record.reg_read[instructionStack->stack[next + 1]] = 1;
       simStorage.stackTop++;
-
       break;
 
     case 0x30: //mov_1
@@ -91,9 +90,9 @@ void MemoryInstruction(int next)
       imm = convertToInt(a0, a1, a2, a3);
       simStorage.registers[instructionStack->stack[next + 1]] = imm;
       //record.reg_write[instructionStack->stack[next + 1]] = 1;
-      std:: cout << "reg is " << imm; //test only
+      //std:: cout << "reg is " << imm; //test only
       next += 6;
-      bln = false;//test only
+      //bln = false;//test only
       break;
 
     case 0x70: //jal
@@ -105,8 +104,7 @@ void MemoryInstruction(int next)
       //std::cout << "  a0 is "<< a0 << " finish ";//test only
       int index;
       index = convertToInt(a0, a1, a2, a3);
-      next = simStorage.stack[index];
-      //record->stack = 1;
+      next = index;
       //std:: cout << "next is " << next;//test only
       //bln = false;//test only
       break;
@@ -122,8 +120,7 @@ void MemoryInstruction(int next)
         a3 = instructionStack->stack[next + 3];
         int index;
         index = convertToInt(a0, a1, a2, a3);
-        next = simStorage.stack[index];
-        //record.stack = 1;
+        next = index;
       }
       break;
 
@@ -138,8 +135,7 @@ void MemoryInstruction(int next)
         a3 = instructionStack->stack[next + 3];
         int index;
         index = convertToInt(a0, a1, a2, a3);
-        next = simStorage.stack[index];
-        //record.stack = 1;
+        next = index;
       }
       break;
 
@@ -154,8 +150,7 @@ void MemoryInstruction(int next)
         a3 = instructionStack->stack[next + 3];
         int index;
         index = convertToInt(a0, a1, a2, a3);
-        next = simStorage.stack[index];
-        //record.stack = 1;
+        next = index;
       }
       break;
 
@@ -170,8 +165,7 @@ void MemoryInstruction(int next)
         a3 = instructionStack->stack[next + 3];
         int index;
         index = convertToInt(a0, a1, a2, a3);
-        next = simStorage.stack[index];
-        //record.stack = 1;
+        next = index;
       }
       break;
 

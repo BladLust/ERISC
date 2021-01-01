@@ -1,14 +1,26 @@
-mov t0,x20
-mov t1,1
-mov t2,16
-jal loop
-draw
-loop:
-store t1,t0
+mov x0,0x00
+mov x1,0x01
+mov t0,0x000002
+mov t1,0x0f4241
+jal loopfst
+loopfst:
+store x1,t0
+add t0,t0,0x000001
+bne t0,t1,loopfst
+mov t0,0x000001
+jal loopsec
+loopsec:
 call calnext
+add t0,t0,0x000001
+bne t0,t1,loopse2
 draw
 end
 calnext:
-mov t1,t2
-draw
+mov t2,t0
+load s1,t0
+beq s1,x1,looptrd
+looptrd:
+add t2,t2,t0
+store x0,t2
+blt t2,t1,looptrd
 ret

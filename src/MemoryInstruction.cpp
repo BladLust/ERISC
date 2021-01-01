@@ -17,6 +17,7 @@
 
 bool bln = true;
 unsigned char a0, a1, a2, a3;
+int imageFileNum;
 
 //function which converts four unsigned char to an integer
 int convertToInt(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3)
@@ -90,9 +91,9 @@ void MemoryInstruction(int next)
       imm = convertToInt(a0, a1, a2, a3);
       simStorage.registers[instructionStack->stack[next + 1]] = imm;
       //record.reg_write[instructionStack->stack[next + 1]] = 1;
-      //std:: cout << "reg is " << imm; //test only
+      std:: cout << "reg is " << imm; //test only
       next += 6;
-      //bln = false;//test only
+      bln = false;//test only
       break;
 
     case 0x70: //jal
@@ -180,7 +181,6 @@ void MemoryInstruction(int next)
       simStorage.stack[instructionStack->stackTop] = simStorage.registers[instructionStack->stack[next + 1]];
       //record.stack = 1;
       simStorage.stackTop--;
-
       break;
 
     case 0x91: //ret
@@ -190,8 +190,8 @@ void MemoryInstruction(int next)
       break;
 
     case 0xa0: //draw
-      //MemoryInstRecord.imageFileNum++;
-      //drawBitmapImage(MemoryInstRecord.imageFileNum);
+      //imageFileNum++;
+      //drawBitmapImage(imageFileNum);
       next += 1;
       break;
 

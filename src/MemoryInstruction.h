@@ -10,10 +10,7 @@
 #include "Storage.h"
 //#include "outputTxt.h"
 
-typedef struct {
-  int imageFileNum = 0;
-} MemoryInst;
 void MemoryInstruction(int next);
-extern MemoryInst MemoryInstRecord;
+
 
 #endif // ERISC_MEMORYINSTRUCTION_H

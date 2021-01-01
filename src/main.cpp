@@ -10,17 +10,18 @@
 using namespace std;
 
 int main() {
-  ios::sync_with_stdio(false);
-  string input="../input.risc";
+  std::string input;
+  std::cin>>input;
   int next = parseInstructions(input);
   dumpBinary(instructionStack->stack, instructionStack->stackTop, 16);
+  std::cerr<<std::endl;
 //  ifstream ifs;
 //  ifs.open(input);
-//  cout<<!ifs<<endl;
+//  cerr<<!ifs<<endl;
 //  ifs>>input;
 //  cout<<input;
 
-  //MemoryInstruction(next);
+  MemoryInstruction(next);
   //drawBitmapImage(MemoryInstRecord.imageFileNum);
   return 0;
 }

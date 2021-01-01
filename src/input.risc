@@ -1,0 +1,14 @@
+mov t0,x20
+mov t1,1
+mov t2,16
+jal loop
+draw
+loop:
+store t1,t0
+call calnext
+draw
+end
+calnext:
+mov t1,t2
+draw
+ret

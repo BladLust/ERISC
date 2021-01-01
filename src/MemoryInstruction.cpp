@@ -13,7 +13,7 @@
 #include <vector>
 #include "MemoryInstruction.h"
 #include "InstructionParser.h"
-
+#include "GeneralFunctions.h"
 
 bool bln = true;
 unsigned char a0, a1, a2, a3;
@@ -34,11 +34,14 @@ int convertToInt(unsigned char a0, unsigned char a1, unsigned char a2, unsigned 
 
 void MemoryInstruction(int next)
 {
+    uint*ptr;
   next = instructionStack->stack[instructionStack->stackTop];
   while (bln)
   {
+      std::cerr<<"Next="<<std::hex<<next<<std::endl;
     switch (instructionStack->stack[next])
     {
+
     case 0x10: //load
       int addrInRs;
       addrInRs = simStorage.registers[instructionStack->stack[next + 2]]; // address in rs
@@ -57,6 +60,7 @@ void MemoryInstruction(int next)
       //record.reg_read[instructionStack->stack[next + 1]] = 1;
       //record.memory[addrInRd] = 1;
       next += 3;
+      std::cerr<<"Next|="<<std::hex<<next<<std::endl;
       break;
 
     case 0x20: //push
@@ -170,16 +174,22 @@ void MemoryInstruction(int next)
       break;
 
     case 0x90: //call
-      next = simStorage.stack[instructionStack->stack[next + 1]];
+//	next = (void*)instructionStack->stack[instructionStack->stack[next + 1]];
       //record.reg_read[instructionStack->stack[next + 1]] = 1;
-      simStorage.stack[instructionStack->stackTop] = simStorage.registers[instructionStack->stack[next + 1]];
+        ptr=(unsigned int*)(void*)(simStorage.stack+simStorage.stackTop-3);
+	fprintf(stderr,"%p %p\n",(uint*)(void*)(simStorage.stack+simStorage.stackTop-3),simStorage.stack+0x400000);
+	*ptr=next+5;
+	std::cerr<<std::hex<<"next="<<next<<' '<<"*ptr="<<*ptr<<std::endl;
+	next=*((int*)(void*)(&(instructionStack->stack[next+1])));
+	dumpBinary(simStorage.stack+simStorage.stackTop-3,4,4);
+//	simStorage.stack[instructionStack->stackTop] = (uint)(next+1)//simStorage.registers[instructionStack->stack[next + 1]];
       //record.stack = 1;
-      simStorage.stackTop--;
+      simStorage.stackTop-=4;
       break;
 
     case 0x91: //ret
-      next = simStorage.stack[instructionStack->stackTop];
-      simStorage.stackTop++;
+	next =*(uint*)(void*)(simStorage.stack+(simStorage.stackTop+1));
+      simStorage.stackTop+=4;
       //record.stack = 1;
       break;
 
@@ -191,7 +201,7 @@ void MemoryInstruction(int next)
 
     case 0x00: //end
       //outputTxt();
-      next += 1;
+	exit(0);
       break;
 
     default : //Optional

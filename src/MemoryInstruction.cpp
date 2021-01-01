@@ -38,7 +38,7 @@ void MemoryInstruction(int next)
   next = instructionStack->stack[instructionStack->stackTop];
   while (bln)
   {
-      std::cerr<<"Next="<<std::hex<<next<<std::endl;
+//      std::cerr<<"Next="<<std::hex<<next<<std::endl;
     switch (instructionStack->stack[next])
     {
 
@@ -177,11 +177,11 @@ void MemoryInstruction(int next)
 //	next = (void*)instructionStack->stack[instructionStack->stack[next + 1]];
       //record.reg_read[instructionStack->stack[next + 1]] = 1;
         ptr=(unsigned int*)(void*)(simStorage.stack+simStorage.stackTop-3);
-	fprintf(stderr,"%p %p\n",(uint*)(void*)(simStorage.stack+simStorage.stackTop-3),simStorage.stack+0x400000);
+//	fprintf(stderr,"%p %p\n",(uint*)(void*)(simStorage.stack+simStorage.stackTop-3),simStorage.stack+0x400000);
 	*ptr=next+5;
-	std::cerr<<std::hex<<"next="<<next<<' '<<"*ptr="<<*ptr<<std::endl;
+//	std::cerr<<std::hex<<"next="<<next<<' '<<"*ptr="<<*ptr<<std::endl;
 	next=*((int*)(void*)(&(instructionStack->stack[next+1])));
-	dumpBinary(simStorage.stack+simStorage.stackTop-3,4,4);
+//	dumpBinary(simStorage.stack+simStorage.stackTop-3,4,4);
 //	simStorage.stack[instructionStack->stackTop] = (uint)(next+1)//simStorage.registers[instructionStack->stack[next + 1]];
       //record.stack = 1;
       simStorage.stackTop-=4;

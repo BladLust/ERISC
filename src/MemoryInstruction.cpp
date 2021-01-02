@@ -53,7 +53,8 @@ void MemoryInstruction(int next) {
   next = instructionStack->stack[instructionStack->stackTop];
   while (bln) {
 //      std::cerr<<"Next="<<std::hex<<next<<std::endl;
-//      monitorMemory();
+//      monitor(std::cerr);
+//      monitorMemory(std::cerr);
     switch (instructionStack->stack[next]) {
 
     case 0x10: // load
@@ -62,8 +63,9 @@ void MemoryInstruction(int next) {
           simStorage
               .registers[instructionStack->stack[next + 2]]; // address in rs
       record.reg_read[instructionStack->stack[next + 2]] = 1;
-      simStorage.registers[instructionStack->stack[next + 1]] =
-          simStorage.memory[addrInRs];
+      ptr=(uint*)((void*)(simStorage.memory+addrInRs));
+      simStorage.registers[instructionStack->stack[next + 1]] =*ptr;
+	 
       record.memory[addrInRs/0x25000] = 1;
       record.reg_write[instructionStack->stack[next + 1]] = 1;
       next += 3;

@@ -2,6 +2,7 @@
 #include<cstring>
 #include"MemoryInstruction.h"
 #include"arithmeticOperation.h"
+#include "drawBitmapImage.h"
 
 // each char contains two hex bytes, e.g, 8 bits;
 // a int contains 32 bits;
@@ -51,6 +52,7 @@ static Memory_4 And(Memory_4 lhs,Memory_4 rhs){
 static Memory_4 Or(Memory_4 lhs,Memory_4 rhs){
     Memory_4 res;
     res.val=lhs.val|rhs.val;
+//    std::cerr<<std::hex<<"Or: "<<lhs.val<<' '<<rhs.val<<std::endl;
     return res;
 }
 
@@ -78,12 +80,15 @@ static Memory_4 imm2Memory(int pos){
 void arithmeticOp(int&pos){
     Memory_4 a,b;
     unsigned char oper=instructionStack->stack[pos];
-    int&c=simStorage.registers[instructionStack->stack[++pos]];
-    a.val=simStorage.registers[instructionStack->stack[++pos]];
+    int x,y,z;
+    int&c=simStorage.registers[z=instructionStack->stack[++pos]];
+    a.val=simStorage.registers[x=instructionStack->stack[++pos]];
+    record.reg_read[x]=1;
+    record.reg_write[z]=1;
     if(oper&1)
 	b=imm2Memory(pos+1),pos+=5;
     else 
-	b.val=simStorage.registers[instructionStack->stack[++pos]],pos++;
+	b.val=simStorage.registers[y=instructionStack->stack[++pos]],record.reg_read[y]=1,pos++;
     switch(oper){	
     case 0x40:case 0x41:
 	c=Add(a,b).val;break;

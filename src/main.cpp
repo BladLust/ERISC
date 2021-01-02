@@ -13,8 +13,7 @@ int main() {
   std::string input;
   std::cin>>input;
   int next = parseInstructions(input);
-//  dumpBinary(instructionStack->stack, instructionStack->stackTop, 16);
-//  std::cerr<<std::endl;
+//  dumpBinary(instructionStack->stack, instructionStack->stackTop, 16);  std::cerr<<std::endl;
 //  ifstream ifs;
 //  ifs.open(input);
 //  cerr<<!ifs<<endl;

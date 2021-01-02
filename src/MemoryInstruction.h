@@ -10,7 +10,9 @@
 #include "Storage.h"
 //#include "outputTxt.h"
 
-void MemoryInstruction(int next);
+void MemoryInstruction();
 
+typedef void (*Function)(int&);
+//extern Function funcPointer[0xff];
 
 #endif // ERISC_MEMORYINSTRUCTION_H

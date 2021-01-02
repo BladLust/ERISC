@@ -5,8 +5,6 @@
 //  Created by Wu Weiyan on 11/27/20.
 //
 
-#include "MemoryInstruction.h"
-#include "InstructionParser.h"
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -14,6 +12,8 @@
 #include <string>
 #include <vector>
 //#include "GeneralFunctions.h"
+#include "MemoryInstruction.h"
+#include "InstructionParser.h"
 #include "arithmeticOperation.h"
 #include "drawBitmapImage.h"
 #include "outputTxt.h"
@@ -21,10 +21,19 @@ bool bln = true;
 unsigned char a0, a1, a2, a3;
 int imageFileNum;
 
+Function funcPointer[0xff];
+
 void monitor(std::ostream&os=std::cout){
     os<<'['<<simStorage.registers[0];
     for(int i=1;i<32;i++)
 	os<<','<<std::hex<<simStorage.registers[i];
+    os<<']'<<std::endl;
+}
+
+void fmonitor(std::ostream&os=std::cout){
+    os<<'['<<simStorage.registers[0];
+    for(int i=1;i<32;i++)
+	os<<','<<*(float*)(void*)(simStorage.registers+i);
     os<<']'<<std::endl;
 }
 
@@ -48,165 +57,212 @@ void monitorMemory(std::ostream&os=std::cout){
     os<<std::endl;
 }
 
-void MemoryInstruction(int next) {
-  uint *ptr;
-  next = instructionStack->stack[instructionStack->stackTop];
-  while (bln) {
-//      std::cerr<<"Next="<<std::hex<<next<<std::endl;
+void load(int&next){
+    int addrInRs;
+    addrInRs=simStorage.registers[instructionStack->stack[next + 2]]; // address in rs
+    record.reg_read[instructionStack->stack[next + 2]] = 1;
+    uint*ptr=(uint*)((void*)(simStorage.memory+addrInRs));
+    simStorage.registers[instructionStack->stack[next + 1]] =*ptr;	 
+    record.memory[addrInRs/0x25000] = 1;
+    record.reg_write[instructionStack->stack[next + 1]] = 1;
+    next += 3;      
+}
+
+void fload(int&next){// load rd rs 
+    int addrInRs;
+    addrInRs=simStorage.registers[instructionStack->stack[next + 2]]; // address in rs
+    record.reg_read[instructionStack->stack[next + 2]] = 1;
+    float*ptr=(float*)((void*)(simStorage.memory+addrInRs));
+    simStorage.registers[instructionStack->stack[next + 1]] =*ptr;	 
+    record.memory[addrInRs/0x25000] = 1;
+    record.reg_write[instructionStack->stack[next + 1]] = 1;
+    next += 3;      
+}
+
+void store(int&next){
+    uint addrInRd;
+    addrInRd =simStorage.registers[instructionStack->stack[next + 2]]; // address in rd
+    record.reg_read[instructionStack->stack[next + 2]] = 1;
+    uint*ptr=(uint*)((void*)(simStorage.memory+addrInRd));
+    *ptr=simStorage.registers[instructionStack->stack[next + 1]];
+    record.reg_read[instructionStack->stack[next + 1]] = 1;
+    record.memory[addrInRd/0x25000] = 1;
+    next += 3;
+}
+
+void fstore(int&next){
+    uint addrInRd;
+    addrInRd =simStorage.registers[instructionStack->stack[next + 2]]; // address in rd
+    record.reg_read[instructionStack->stack[next + 2]] = 1;
+    float*ptr=(float*)((void*)(simStorage.memory+addrInRd));
+    *ptr=simStorage.registers[instructionStack->stack[next + 1]];
+    record.reg_read[instructionStack->stack[next + 1]] = 1;
+    record.memory[addrInRd/0x25000] = 1;
+    next += 3;
+}
+
+void push(int&next){
+    uint*ptr=(uint *)(void *)(simStorage.stack + simStorage.stackTop - 3);
+    *ptr=simStorage.registers[instructionStack->stack[next + 1]];
+    record.reg_read[instructionStack->stack[next + 1]] = 1;
+    record.stack = 1;
+    simStorage.stackTop -= 4;
+    next += 2;
+}
+
+void pop(int&next){
+    uint *ptr=(uint *)(void *)(simStorage.stack + simStorage.stackTop + 1);
+    simStorage.registers[instructionStack->stack[next + 1]] = *ptr;
+    record.stack = 1;
+    record.reg_read[instructionStack->stack[next + 1]] = 1;
+    simStorage.stackTop += 4;
+    next += 2;      
+}
+
+void mov1(int&next){
+    simStorage.registers[instructionStack->stack[next + 1]] =
+          simStorage.registers[instructionStack->stack[next + 2]];
+    record.reg_read[instructionStack->stack[next + 2]] = 1;
+    record.reg_write[instructionStack->stack[next + 1]] = 1;
+    next += 3;
+}
+
+void fmov1(int&next){
+    float dest=*(float*)((void*)(simStorage.registers+instructionStack->stack[next+2]));
+    *(float*)((void*)(simStorage.registers+instructionStack->stack[next+1]));
+    record.reg_read[instructionStack->stack[next + 2]] = 1;
+    record.reg_write[instructionStack->stack[next + 1]] = 1;
+    next += 3;
+}
+
+void mov2(int&next){
+    simStorage.registers[instructionStack->stack[next + 1]] =
+	*(uint *)(void *)(instructionStack->stack + next + 2);
+    record.reg_write[instructionStack->stack[next + 1]] = 1;
+    next += 6;    
+}
+
+void fmov2(int&next){
+    float dest=*(float*)(void *)(instructionStack->stack + next + 2);
+    *(float*)((void*)(simStorage.registers+instructionStack->stack[next + 1]))=dest;
+    record.reg_write[instructionStack->stack[next + 1]] = 1;
+    next += 6;    
+}
+
+void jal(int&next){
+    next = *(uint *)(void *)(instructionStack->stack + next + 1);
+}
+
+void beq(int&next){
+    if (simStorage.registers[instructionStack->stack[next + 1]] ==
+	simStorage.registers[instructionStack->stack[next + 2]]) 
+        next = *(uint *)(void *)(instructionStack->stack + next + 3);
+    else
+	next+=7;
+}
+
+void bne(int&next){
+    if (simStorage.registers[instructionStack->stack[next + 1]] !=
+	simStorage.registers[instructionStack->stack[next + 2]]) 
+        next = *(uint *)(void *)(instructionStack->stack + next + 3);
+    else
+        next+=7;
+}
+
+void blt(int&next){
+    if (simStorage.registers[instructionStack->stack[next + 1]] <
+	simStorage.registers[instructionStack->stack[next + 2]]) 
+        next = *(uint *)(void *)(instructionStack->stack + next + 3);
+    else
+        next+=7;
+}
+
+void bge(int&next){
+    if (simStorage.registers[instructionStack->stack[next + 1]] >=
+	simStorage.registers[instructionStack->stack[next + 2]]) 
+        next = *(uint *)(void *)(instructionStack->stack + next + 3);
+    else
+        next+=7;
+}
+
+void call(int&next){    
+      uint* ptr =
+          (unsigned int *)(void *)(simStorage.stack + simStorage.stackTop - 3);
+      *ptr = next + 5;
+      next = *((int *)(void *)(&(instructionStack->stack[next + 1])));      
+      record.stack = 1;
+      simStorage.stackTop -= 4;
+}
+
+void ret(int&next){
+    next = *(uint *)(void *)(simStorage.stack + (simStorage.stackTop + 1));
+    simStorage.stackTop += 4;
+    record.stack = 1;
+}
+
+void draw(int&next){
+      drawBitmapImage(imageFileNum++);
+//      std::cerr<<1.*clock()/CLOCKS_PER_SEC<<std::endl;
+      next += 1;
+}
+
+void end(int&next){
+    outputTxt();
+    exit(0);
+}
+
+static void init(){
+    funcPointer[0x10]=load;
+    funcPointer[0x11]=store;
+    funcPointer[0x12]=fload;
+    funcPointer[0x13]=fstore;
+    funcPointer[0x20]=push;
+    funcPointer[0x21]=pop;
+    funcPointer[0x30]=mov1;
+    funcPointer[0x31]=mov2;
+    funcPointer[0x32]=fmov1;
+    funcPointer[0x33]=fmov2;
+    funcPointer[0x40]=add;
+    funcPointer[0x41]=add;
+    funcPointer[0x42]=sub;
+    funcPointer[0x43]=sub;
+    funcPointer[0x44]=fadd;
+    funcPointer[0x45]=fadd;
+    funcPointer[0x46]=fsub;
+    funcPointer[0x47]=fsub;
+    funcPointer[0x50]=mul;
+    funcPointer[0x51]=mul;
+    funcPointer[0x52]=div;
+    funcPointer[0x53]=div;
+    funcPointer[0x54]=rem;
+    funcPointer[0x55]=rem;
+    funcPointer[0x56]=fmul;
+    funcPointer[0x57]=fmul;
+    funcPointer[0x58]=fdiv;
+    funcPointer[0x59]=fdiv;
+    funcPointer[0x60]=and_;
+    funcPointer[0x61]=and_;
+    funcPointer[0x62]=or_;
+    funcPointer[0x63]=or_;
+    funcPointer[0x70]=jal;
+    funcPointer[0x80]=beq;
+    funcPointer[0x81]=bne;
+    funcPointer[0x82]=blt;
+    funcPointer[0x83]=bge;
+    funcPointer[0x90]=call;
+    funcPointer[0x91]=ret;
+    funcPointer[0xa0]=draw;
+    funcPointer[0x00]=end;
+}
+
+void MemoryInstruction() {
+    init();
+    int next = instructionStack->stack[instructionStack->stackTop];
+    while (bln) {
+//	std::cerr<<"Next="<<std::hex<<next<<std::endl;
 //      monitor(std::cerr);
 //      monitorMemory(std::cerr);
-    switch (instructionStack->stack[next]) {
-
-    case 0x10: // load
-      int addrInRs;
-      addrInRs =
-          simStorage
-              .registers[instructionStack->stack[next + 2]]; // address in rs
-      record.reg_read[instructionStack->stack[next + 2]] = 1;
-      ptr=(uint*)((void*)(simStorage.memory+addrInRs));
-      simStorage.registers[instructionStack->stack[next + 1]] =*ptr;
-	 
-      record.memory[addrInRs/0x25000] = 1;
-      record.reg_write[instructionStack->stack[next + 1]] = 1;
-      next += 3;
-      break;
-
-    case 0x11: // store
-      uint addrInRd;
-      addrInRd =simStorage.registers[instructionStack->stack[next + 2]]; // address in rd
-      record.reg_read[instructionStack->stack[next + 2]] = 1;
-//      std::cerr<<"Addr="<<addrInRd<<std::endl;
-      ptr=(uint*)((void*)(simStorage.memory+addrInRd));
-      *ptr =
-          simStorage.registers[instructionStack->stack[next + 1]];
-      record.reg_read[instructionStack->stack[next + 1]] = 1;
-      record.memory[addrInRd/0x25000] = 1;
-//      std::cerr<<addrInRd<<std::endl;
-      next += 3;
-//      std::cerr << "Next|=" << std::dec << addrInRd<< std::endl;
-      break;
-
-    case 0x20: // push
-      *(uint *)(void *)(simStorage.stack + simStorage.stackTop - 3) =
-          simStorage.registers[instructionStack->stack[next + 1]];
-      record.reg_read[instructionStack->stack[next + 1]] = 1;
-      record.stack = 1;
-      simStorage.stackTop -= 4;
-      next += 2;
-      break;
-
-    case 0x21: // pop
-      simStorage.registers[instructionStack->stack[next + 1]] =
-          *(uint *)(void *)(simStorage.stack + simStorage.stackTop + 1);
-      record.stack = 1;
-      record.reg_read[instructionStack->stack[next + 1]] = 1;
-      simStorage.stackTop += 4;
-      next += 2;
-      break;
-
-    case 0x30: // mov_1
-      simStorage.registers[instructionStack->stack[next + 1]] =
-          simStorage.registers[instructionStack->stack[next + 2]];
-      record.reg_read[instructionStack->stack[next + 2]] = 1;
-      record.reg_write[instructionStack->stack[next + 1]] = 1;
-      next += 3;
-      // bln = false;//test only
-      break;
-
-    case 0x31: // mov_2
-
-      simStorage.registers[instructionStack->stack[next + 1]] =
-          *(uint *)(void *)(instructionStack->stack + next + 2);
-//      cout << "imm=" << dec
-//           << simStorage.registers[instructionStack->stack[next + 1]];
-      record.reg_write[instructionStack->stack[next + 1]] = 1;
-      // std:: cout << "reg is " << imm; //test only
-      next += 6;
-      // bln = false;//test only
-      break;
-
-    case 0x70: // jal
-
-      next = *(uint *)(void *)(instructionStack->stack + next + 1);
-      break;
-
-    case 0x80: // beq
-//      cout<<simStorage.registers[instructionStack->stack[next + 1]]<<endl;
-      if (simStorage.registers[instructionStack->stack[next + 1]] ==
-          simStorage.registers[instructionStack->stack[next + 2]]) {
-        next = *(uint *)(void *)(instructionStack->stack + next + 3);
-      }
-      else
-      next+=7;
-      break;
-
-    case 0x81: // bne
-      if (simStorage.registers[instructionStack->stack[next + 1]] !=
-          simStorage.registers[instructionStack->stack[next + 2]]) {
-        next = *(uint *)(void *)(instructionStack->stack + next + 3);
-      }
-      else
-        next+=7;
-      break;
-
-    case 0x82: // blt
-      if (simStorage.registers[instructionStack->stack[next + 1]] <
-          simStorage.registers[instructionStack->stack[next + 2]]) {
-        next = *(uint *)(void *)(instructionStack->stack + next + 3);
-      }
-      else
-        next+=7;
-      break;
-
-    case 0x83: // bge
-      if (simStorage.registers[instructionStack->stack[next + 1]] >=
-          simStorage.registers[instructionStack->stack[next + 2]]) {
-        next = *(uint *)(void *)(instructionStack->stack + next + 3);
-      }
-      else
-        next+=7;
-      break;
-
-    case 0x90: // call
-      //	next =
-      //(void*)instructionStack->stack[instructionStack->stack[next + 1]];
-      // record.reg_read[instructionStack->stack[next + 1]] = 1;
-      ptr =
-          (unsigned int *)(void *)(simStorage.stack + simStorage.stackTop - 3);
-      //	fprintf(stderr,"%p
-      //%p\n",(uint*)(void*)(simStorage.stack+simStorage.stackTop-3),simStorage.stack+0x400000);
-      *ptr = next + 5;
-      //	std::cerr<<std::hex<<"next="<<next<<'
-      //'<<"*ptr="<<*ptr<<std::endl;
-      next = *((int *)(void *)(&(instructionStack->stack[next + 1])));
-      //	dumpBinary(simStorage.stack+simStorage.stackTop-3,4,4);
-      //	simStorage.stack[instructionStack->stackTop] =
-      //(uint)(next+1)//simStorage.registers[instructionStack->stack[next + 1]];
-       record.stack = 1;
-      simStorage.stackTop -= 4;
-      break;
-
-    case 0x91: // ret
-      next = *(uint *)(void *)(simStorage.stack + (simStorage.stackTop + 1));
-      simStorage.stackTop += 4;
-       record.stack = 1;
-      break;
-
-    case 0xa0: // draw
-      // imageFileNum++;
-      drawBitmapImage(imageFileNum++);
-      next += 1;
-      break;
-
-    case 0x00: // end
-//	monitorMemory();
-      outputTxt();
-      exit(0);
-      break;
-
-    default: // Optional
-      arithmeticOp(next);
-      break;
+//	monitor();
+	funcPointer[instructionStack->stack[next]](next);
     }
-  }
 }

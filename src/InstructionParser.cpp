@@ -7,7 +7,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
-
+#include <sstream>
 InstructionStackType instStack;
 const InstructionStackType *instructionStack;
 /**
@@ -34,6 +34,25 @@ static inline void insertIntToInstStack(unsigned int &param, char size,
   //  dumpBinary(instructionStack->stack, instructionStack->stackTop, 16);
   return;
 }
+
+static inline void insertFloatToInstStack(unsigned int &param, char size,
+                                        bool haveImm = false, float imm = 0) {
+  int *loc =
+      (int *)(void *)(instStack.stack + instStack.stackTop);
+  *loc = param;               // store the data into stac
+  instStack.stackTop += size; // increase stacktop, the extra long part of the
+                              // data will be later covered
+  if (haveImm) { // fill in the imminent number (if there's any) after the main
+                 // instruction.
+    float*tmp = (float*)(void *)(instStack.stack + instStack.stackTop);
+    *tmp = imm;
+//    for(int i=0;i<4;i++)std::cerr<<std::hex<<(int)(instStack.stack[instStack.stackTop+i])<<' ';std::cerr<<std::endl;
+    instStack.stackTop += 4;
+  }
+  //  dumpBinary(instructionStack->stack, instructionStack->stackTop, 16);
+  return;
+}
+
 /**
  * converts string to int. supports both Dec and Hex
  * @param str the input string
@@ -61,6 +80,13 @@ static unsigned int stringToInt(const std::string &str) {
   }
   return result;
 }
+
+static float stringToFloat(std::string s){
+    float result;
+    std::stringstream ss(s);
+    ss>>result;
+    return result;
+}
 /**
  * Actual instruction parser, handles register and imminent number input.
  * @param instruction the code for the instruction (e.g.0x60 for and)
@@ -72,7 +98,7 @@ static unsigned int stringToInt(const std::string &str) {
  */
 static void parseInstructionNoAddr(unsigned char instruction,
                                    std::ifstream &ifs, char totalLen,
-                                   bool canHaveImm) {
+                                   bool canHaveImm, bool isFloat=false) {
 #if DEBUG_LVL >= 5
   std::cout << "Debug:" << (int *)instruction << ' ' << totalLen << std::endl;
 #endif
@@ -80,6 +106,7 @@ static void parseInstructionNoAddr(unsigned char instruction,
   char params[15];
   unsigned char bitMove = 8;
   unsigned int imm = 0;
+  float fimm;
   char haveImm = 0;
   char len = totalLen;
   while (--len) {
@@ -93,7 +120,10 @@ static void parseInstructionNoAddr(unsigned char instruction,
     else
       ifs.get(params, 11, ',');
     if (canHaveImm && len == 1 && params[0] <= '9' && params[0] >= '0') {
-      imm = stringToInt(params);
+	if(isFloat)
+	    fimm = stringToFloat(params);
+	else
+	    imm = stringToInt(params);
       haveImm = 1;
     } else {
       tempInstruction |= registerNameToLoc(params) << bitMove;
@@ -101,7 +131,10 @@ static void parseInstructionNoAddr(unsigned char instruction,
     }
   }
   tempInstruction |= ((unsigned int)instruction + haveImm);
-  insertIntToInstStack(tempInstruction, totalLen - haveImm, haveImm, imm);
+  if(!isFloat)
+      insertIntToInstStack(tempInstruction, totalLen - haveImm, haveImm, imm);
+  else
+      insertFloatToInstStack(tempInstruction, totalLen - haveImm, haveImm, fimm);
   return;
 }
 
@@ -140,7 +173,7 @@ int parseInstructions(std::string dir) {
   std::map<std::string, std::vector<unsigned int> > jumpMap;
   std::ifstream ifs(dir);
   std::string currentInstruction;
-  while (ifs >> currentInstruction) {
+  while (ifs >> currentInstruction) {// load s1 t2
     if (currentInstruction[currentInstruction.length() - 1] == ':') {
       currentInstruction.pop_back(); // C++11 feature
       markMap[currentInstruction] =
@@ -154,7 +187,7 @@ int parseInstructions(std::string dir) {
         break;
       case 's':
         if (currentInstruction[1] == 'u') {
-          parseInstructionNoAddr((char)0x42, ifs, 4, true); // sub
+          parseInstructionNoAddr((char)0x42, ifs, 4, true); // sub 
           continue;
         }
         parseInstructionNoAddr((char)0x11, ifs, 3, false); // store
@@ -222,6 +255,28 @@ int parseInstructions(std::string dir) {
       case 'e':
         parseInstructionNoAddr((char)0x00, ifs, 1, false); // end
         break;
+      case 'f': // fadd fsub fmul fdiv fload fstore
+	  switch(currentInstruction[1]){
+	  case 'a':
+	      parseInstructionNoAddr((unsigned char)0x44, ifs, 4, true, true);
+	      break;
+	  case 's':
+	      currentInstruction[2]=='t'?
+		  parseInstructionNoAddr((unsigned char)0x11, ifs, 3, false):parseInstructionNoAddr((unsigned char)0x46, ifs, 4, true, true);
+	      break;
+	  case 'm':
+	      currentInstruction[2]=='o'?
+		  parseInstructionNoAddr(0x32, ifs, 3, true, true):
+		  parseInstructionNoAddr((unsigned char)0x56, ifs, 4, true, true);
+	      break;
+	  case 'd':
+	      parseInstructionNoAddr((unsigned char)0x58, ifs, 4, true, true);
+	      break;
+	  case 'l':
+	      parseInstructionNoAddr((char)0x12, ifs, 3, false); // load
+	      break;
+	  }
+	  break;
       }
     }
   }

@@ -10,6 +10,7 @@
 using namespace std;
 
 int main() {
+    std::ios::sync_with_stdio(false);
   std::string input;
   std::cin>>input;
   int next = parseInstructions(input);

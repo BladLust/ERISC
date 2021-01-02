@@ -30,10 +30,11 @@ unsigned int registerNameToLoc(const std::string &name) {
         return i;
     }
   }
+  return -1;
 }
 void dumpBinary(const void *arr, int len, int lineLen) {
   int count = 0;
-  unsigned char *dumpArr = (unsigned char *)arr;
+  unsigned char *dumpArr = (unsigned char *)arr;  
   std::cout.fill('0');
   while (len--) {
     if (count % lineLen == 0) {
@@ -45,4 +46,5 @@ void dumpBinary(const void *arr, int len, int lineLen) {
     }
     count++;
   }
+  std::cout<<std::endl;
 }

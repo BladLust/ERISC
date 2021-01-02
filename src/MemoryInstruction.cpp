@@ -21,6 +21,13 @@ bool bln = true;
 unsigned char a0, a1, a2, a3;
 int imageFileNum;
 
+void monitor(std::ostream&os=std::cout){
+    os<<'['<<simStorage.registers[0];
+    for(int i=1;i<32;i++)
+	os<<','<<std::hex<<simStorage.registers[i];
+    os<<']'<<std::endl;
+}
+
 // function which converts four unsigned char to an integer
 int convertToInt(unsigned char a0, unsigned char a1, unsigned char a2,
                  unsigned char a3) {
@@ -33,11 +40,20 @@ int convertToInt(unsigned char a0, unsigned char a1, unsigned char a2,
   x = (a[0] << 24) | (a[1] << 16) | (a[2] << 8) | a[3];
   return x;
 }
+
+void monitorMemory(std::ostream&os=std::cout){
+    for(int i=0;i<0x400000;i++)
+	if(simStorage.memory[i]!=0)
+	    os<<std::hex<<'('<<i<<','<<(uint)simStorage.memory[i]<<')'<<' ';
+    os<<std::endl;
+}
+
 void MemoryInstruction(int next) {
   uint *ptr;
   next = instructionStack->stack[instructionStack->stackTop];
   while (bln) {
-//          std::cerr<<"Next="<<std::hex<<next<<std::endl;
+//      std::cerr<<"Next="<<std::hex<<next<<std::endl;
+//      monitorMemory();
     switch (instructionStack->stack[next]) {
 
     case 0x10: // load
@@ -55,18 +71,17 @@ void MemoryInstruction(int next) {
 
     case 0x11: // store
       uint addrInRd;
-      addrInRd =
-          simStorage
-              .registers[instructionStack->stack[next + 2]]; // address in rd
+      addrInRd =simStorage.registers[instructionStack->stack[next + 2]]; // address in rd
       record.reg_read[instructionStack->stack[next + 2]] = 1;
-//      std::cerr<<addrInRd<<std::endl;
-      simStorage.memory[addrInRd] =
+//      std::cerr<<"Addr="<<addrInRd<<std::endl;
+      ptr=(uint*)((void*)(simStorage.memory+addrInRd));
+      *ptr =
           simStorage.registers[instructionStack->stack[next + 1]];
       record.reg_read[instructionStack->stack[next + 1]] = 1;
       record.memory[addrInRd/0x25000] = 1;
 //      std::cerr<<addrInRd<<std::endl;
       next += 3;
-      std::cerr << "Next|=" << std::dec << addrInRd<< std::endl;
+//      std::cerr << "Next|=" << std::dec << addrInRd<< std::endl;
       break;
 
     case 0x20: // push
@@ -182,6 +197,7 @@ void MemoryInstruction(int next) {
       break;
 
     case 0x00: // end
+//	monitorMemory();
       outputTxt();
       exit(0);
       break;

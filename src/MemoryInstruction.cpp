@@ -201,7 +201,7 @@ void ret(int&next){
 }
 
 void draw(int&next){
-      drawBitmapImage(imageFileNum++);
+      drawBitmapImage(++imageFileNum);
 //      std::cerr<<1.*clock()/CLOCKS_PER_SEC<<std::endl;
       next += 1;
 }

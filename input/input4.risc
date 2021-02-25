@@ -1,0 +1,30 @@
+mov x0,0x11111100
+mov x1,0x01
+mov x2,0x11111101
+mov t0,0x000002
+mov t1,1000000
+jal loopfst
+loopfst:
+store x1,t0
+add t0,t0,0x01
+bne t0,t1,loopfst
+mov t0,0x02
+jal loopsec
+loopsec:
+call calnext
+add t0,t0,0x000001
+bne t0,t1,loopsec
+draw
+end
+calnext:
+mov t2,t0
+load s1,t0
+or s1,s1,x0
+beq s1,x2,looptrd
+looptrd:
+add t2,t2,t0
+load s2,t2
+and s2,s2,0x11111100
+store s2,t2
+blt t2,t1,looptrd
+ret

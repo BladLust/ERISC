@@ -35,3 +35,6 @@
 *.DS_Store
 */cmake-build-debug/*
 */.idea/*
+Documents/
+*.mp4
+.idea/

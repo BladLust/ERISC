@@ -1,0 +1,16 @@
+fmov t1,2
+fmov t2,1
+fmov t3,1
+fmov t4,1
+mov s1,0
+mov s2,20
+jal loop
+loop:
+fadd t3,t3,1
+fmul t2,t2,t3
+fdiv t5,t4,t2
+fadd t1,t1,t5
+add s1,s1,1
+bne s1,s2,loop
+draw
+end
